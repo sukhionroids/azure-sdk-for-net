@@ -55,7 +55,7 @@ function EnsureDeprecatedPackagesInLegacy() {
     }
 
     if (Test-Path $latestMetadataPath) { 
-      Write-Host "Package $($deprecatedPackage.Package) is deprecated but has file in latest metadata folder. Moving to legacy. (might overwrite preview file)"
+      Write-Host "Package $($deprecatedPackage.Package) is deprecated but has file in latest metadata folder. Moving to legacy. (might overwrite preview version if it exists in metadata/legacy)"
       Move-Item $latestMetadataPath "$DocRepoLocation/metadata/legacy/$($deprecatedPackage.Package).json" -Force
     }
   }
