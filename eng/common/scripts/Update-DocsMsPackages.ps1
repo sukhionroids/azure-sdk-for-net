@@ -42,7 +42,7 @@ param (
 
 . (Join-Path $PSScriptRoot common.ps1)
 
-function EnsureDeprecatedPackagesInLegacy() { 
+function EnsureDeprecatedMetadataFilesInLegacy() { 
   $csvMetadata = (Get-CSVMetadata).Where({ $_.Support -eq 'deprecated' -and $_.Hide -ne 'true' })
   
   foreach ($deprecatedPackage in $csvMetadata) {
@@ -157,7 +157,7 @@ function GetDocsMetadata() {
 
 if ($UpdateDocsMsPackagesFn -and (Test-Path "Function:$UpdateDocsMsPackagesFn")) {
   
-  EnsureDeprecatedPackagesInLegacy
+  EnsureDeprecatedMetadataFilesInLegacy
 
   try {
     $docsMetadata = GetDocsMetadata
