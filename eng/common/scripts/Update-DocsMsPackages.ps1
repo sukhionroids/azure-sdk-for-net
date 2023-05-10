@@ -42,6 +42,25 @@ param (
 
 . (Join-Path $PSScriptRoot common.ps1)
 
+function EnsureDeprecatedPackagesInLegacy() { 
+  $csvMetadata = (Get-CSVMetadata).Where({ $_.Support -eq 'deprecated' -and $_.Hide -ne 'true' })
+  
+  foreach ($deprecatedPackage in $csvMetadata) {
+    $previewMetadataPath = "$DocRepoLocation/metadata/preview/$($deprecatedPackage.Package).json"
+    $latestMetadataPath = "$DocRepoLocation/metadata/latest/$($deprecatedPackage.Package).json"
+
+    if (Test-Path $previewMetadataPath) { 
+      Write-Host "Package $($deprecatedPackage.Package) is deprecated but has file in preview metadata folder. Moving to legacy."
+      Move-Item $previewMetadataPath "$DocRepoLocation/metadata/legacy/$($deprecatedPackage.Package).json" -Force
+    }
+
+    if (Test-Path $latestMetadataPath) { 
+      Write-Host "Package $($deprecatedPackage.Package) is deprecated but has file in latest metadata folder. Moving to legacy. (might overwrite preview file)"
+      Move-Item $latestMetadataPath "$DocRepoLocation/metadata/legacy/$($deprecatedPackage.Package).json" -Force
+    }
+  }
+}
+
 function GetDocsMetadataForMoniker($moniker) { 
   $searchPath = Join-Path $DocRepoLocation 'metadata' $moniker
   if (!(Test-Path $searchPath)) { 
@@ -137,6 +156,8 @@ function GetDocsMetadata() {
 }
 
 if ($UpdateDocsMsPackagesFn -and (Test-Path "Function:$UpdateDocsMsPackagesFn")) {
+  
+  EnsureDeprecatedPackagesInLegacy
 
   try {
     $docsMetadata = GetDocsMetadata
