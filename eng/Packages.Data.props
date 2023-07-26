@@ -298,7 +298,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TestProxyVersion>1.0.0-dev.20230706.1</TestProxyVersion>
+    <TestProxyVersion>1.0.0-dev.20230721.1</TestProxyVersion>
   </PropertyGroup>
 
 </Project>
